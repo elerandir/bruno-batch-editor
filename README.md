@@ -8,9 +8,9 @@
 [![Built with Gradle](https://img.shields.io/badge/Built%20with-Gradle-02303A.svg?logo=gradle)](https://gradle.org)
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
 
-A CLI tool that batch-edits [Bruno](https://www.usebruno.com/) `.bru` request files — for
-example, replacing a string everywhere it appears inside a request's body — while leaving
-the rest of each file byte-for-byte untouched.
+A CLI tool that goes through every [Bruno](https://www.usebruno.com/) `.bru` request file
+under a given path and replaces a literal string with a new one wherever it appears inside
+that request's body — leaving the rest of each file byte-for-byte untouched.
 
 ## Usage
 
