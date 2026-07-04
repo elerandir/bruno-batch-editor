@@ -3,7 +3,7 @@
 ## Reporting a vulnerability
 
 Please report security vulnerabilities privately using
-[GitHub Private Vulnerability Reporting](https://github.com/elerandir/bruno-batch-processor/security/advisories/new)
+[GitHub Private Vulnerability Reporting](https://github.com/elerandir/bruno-batch-editor/security/advisories/new)
 rather than filing a public issue. You should receive an initial response within 5
 business days.
 
@@ -14,7 +14,7 @@ Please include:
 
 ## Threat model
 
-`bruno-batch-processor` is a local CLI tool that reads and rewrites `.bru` files on the
+`bruno-batch-editor` is a local CLI tool that reads and rewrites `.bru` files on the
 filesystem paths its user explicitly points it at. It does not open network listeners,
 make outbound network calls, or execute file contents. The main risks in scope are:
 

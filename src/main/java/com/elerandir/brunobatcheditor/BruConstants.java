@@ -1,4 +1,4 @@
-package com.elerandir.brunobatchprocessor;
+package com.elerandir.brunobatcheditor;
 
 import lombok.experimental.UtilityClass;
 

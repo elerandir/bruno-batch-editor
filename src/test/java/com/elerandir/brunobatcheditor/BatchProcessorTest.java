@@ -1,7 +1,7 @@
-package com.elerandir.brunobatchprocessor;
+package com.elerandir.brunobatcheditor;
 
-import com.elerandir.brunobatchprocessor.model.ReplacementResult;
-import com.elerandir.brunobatchprocessor.model.RuntimeConfig;
+import com.elerandir.brunobatcheditor.model.ReplacementResult;
+import com.elerandir.brunobatcheditor.model.RuntimeConfig;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;

@@ -1,6 +1,6 @@
-package com.elerandir.brunobatchprocessor;
+package com.elerandir.brunobatcheditor;
 
-import com.elerandir.brunobatchprocessor.cli.ReplaceBodyCommand;
+import com.elerandir.brunobatcheditor.cli.ReplaceBodyCommand;
 import lombok.experimental.UtilityClass;
 import picocli.CommandLine;
 

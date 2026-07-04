@@ -1,4 +1,4 @@
-package com.elerandir.brunobatchprocessor.model;
+package com.elerandir.brunobatcheditor.model;
 
 import java.nio.file.Path;
 

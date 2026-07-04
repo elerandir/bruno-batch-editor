@@ -1,6 +1,6 @@
-package com.elerandir.brunobatchprocessor;
+package com.elerandir.brunobatcheditor;
 
-import com.elerandir.brunobatchprocessor.model.RuntimeConfig;
+import com.elerandir.brunobatcheditor.model.RuntimeConfig;
 import dagger.BindsInstance;
 import dagger.Component;
 

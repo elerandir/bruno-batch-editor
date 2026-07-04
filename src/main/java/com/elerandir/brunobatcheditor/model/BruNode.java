@@ -1,4 +1,4 @@
-package com.elerandir.brunobatchprocessor.model;
+package com.elerandir.brunobatcheditor.model;
 
 /**
  * One segment of a parsed {@code .bru} file, in source order. Concatenating every

@@ -1,9 +1,9 @@
-package com.elerandir.brunobatchprocessor;
+package com.elerandir.brunobatcheditor;
 
-import com.elerandir.brunobatchprocessor.model.BodyReplacementOutcome;
-import com.elerandir.brunobatchprocessor.model.BruDocument;
-import com.elerandir.brunobatchprocessor.model.BruNode;
-import com.elerandir.brunobatchprocessor.model.RuntimeConfig;
+import com.elerandir.brunobatcheditor.model.BodyReplacementOutcome;
+import com.elerandir.brunobatcheditor.model.BruDocument;
+import com.elerandir.brunobatcheditor.model.BruNode;
+import com.elerandir.brunobatcheditor.model.RuntimeConfig;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
