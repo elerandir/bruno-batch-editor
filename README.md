@@ -14,12 +14,35 @@ the rest of each file byte-for-byte untouched.
 
 ## Usage
 
+Build a standalone install once:
+
 ```sh
-./gradlew run --args="<PATH> --search <TEXT> --replace <TEXT> [--dry-run]"
+./gradlew installDist
+```
+
+This produces `build/install/bruno-batch-processor/`, with a launcher script at
+`bin/bruno-batch-processor` that bundles its own classpath — no Gradle or `-jar` flags
+needed afterward. Optionally put it on your `PATH`:
+
+```sh
+ln -s "$(pwd)/build/install/bruno-batch-processor/bin/bruno-batch-processor" /usr/local/bin/bruno-batch-processor
+```
+
+Then run it directly:
+
+```sh
+bruno-batch-processor <PATH> --search <TEXT> --replace <TEXT> [--dry-run]
 ```
 
 `PATH` is either a single `.bru` file or a directory, searched recursively for `.bru`
 files. Example:
+
+```sh
+bruno-batch-processor ./requests --search old-api.example.com --replace new-api.example.com
+```
+
+During development, `./gradlew run --args="..."` works too (compiles and runs in one
+step, no `installDist` needed):
 
 ```sh
 ./gradlew run --args="./requests --search old-api.example.com --replace new-api.example.com"
