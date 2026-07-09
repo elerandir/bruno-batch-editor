@@ -63,9 +63,10 @@ they were.
 
 ### `enable-bearer-auth`
 
-Sets every eligible request's `auth` block to `mode: bearer` and adds an `auth:bearer` block
-referencing a Bruno variable for the token (`{{jwt}}` by default), so you can define that
-variable once (e.g. on the collection or an environment) and reuse it everywhere.
+Sets every eligible request's `auth: bearer` field (on its HTTP method block, e.g. `get { ...
+auth: bearer }`) and adds an `auth:bearer` block referencing a Bruno variable for the token
+(`{{jwt}}` by default), so you can define that variable once (e.g. on the collection or an
+environment) and reuse it everywhere.
 
 ```sh
 bruno-batch-editor enable-bearer-auth <PATH> [--token-var <NAME>] [--dry-run]
@@ -84,9 +85,9 @@ A request is skipped, left completely untouched, if either is true:
   themselves;
 - it lives directly inside a folder named `auth` or `token`, case-insensitively.
 
-Requests already set to `mode: bearer` are left as-is (their existing `auth:bearer` block,
-if any, is not overwritten). Requests with a different `mode` have only that line rewritten;
-everything else in the `auth` block is preserved.
+Requests already set to `auth: bearer` are left as-is (their existing `auth:bearer` block, if
+any, is not overwritten). Requests with a different `auth` value have only that line
+rewritten; everything else in the method block is preserved.
 
 | Option              | Required | Description                                                                          |
 |----------------------|----------|----------------------------------------------------------------------------------------|
