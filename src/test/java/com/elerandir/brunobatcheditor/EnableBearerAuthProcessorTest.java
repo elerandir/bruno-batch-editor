@@ -57,7 +57,7 @@ class EnableBearerAuthProcessorTest {
                 assertThat(result.skipped()).isFalse();
                 assertThat(result.enabled()).isTrue();
             });
-            assertThat(Files.readString(file)).contains("auth {\n  mode: bearer\n}", "token: {{jwt}}");
+            assertThat(Files.readString(file)).contains("auth: bearer", "token: {{jwt}}");
         }
     }
 

@@ -1,7 +1,6 @@
 package com.elerandir.brunobatcheditor;
 
 import com.elerandir.brunobatcheditor.model.BearerAuthOutcome;
-import com.elerandir.brunobatcheditor.model.BruDocument;
 import com.elerandir.brunobatcheditor.model.EnableBearerAuthConfig;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -35,28 +34,28 @@ class BearerAuthEnablerTest {
     }
 
     @Nested
-    @DisplayName("given a request with no auth block at all")
-    class GivenNoAuthBlock {
+    @DisplayName("given a request with no auth field at all")
+    class GivenNoAuthField {
 
         @Test
-        @DisplayName("when enabled, appends an auth block set to bearer and an auth:bearer block")
-        void addsBothBlocks() {
+        @DisplayName("when enabled, adds auth: bearer to the method block and an auth:bearer block")
+        void addsAuthFieldAndBlock() {
             BearerAuthOutcome outcome = enable(REQUEST_WITHOUT_AUTH, "jwt");
 
             assertThat(outcome.changed()).isTrue();
             String rendered = parser.render(outcome.document());
-            assertThat(rendered).contains("auth {\n  mode: bearer\n}");
+            assertThat(rendered).contains("get {\n  url: https://api.example.com/users\n  auth: bearer\n}");
             assertThat(rendered).contains("auth:bearer {\n  token: {{jwt}}\n}");
         }
     }
 
     @Nested
-    @DisplayName("given a request whose auth block is set to a different mode")
+    @DisplayName("given a request whose method block is set to a different auth mode")
     class GivenDifferentMode {
 
         @Test
-        @DisplayName("when enabled, rewrites the mode to bearer without touching the rest of the block")
-        void rewritesModeOnly() {
+        @DisplayName("when enabled, rewrites only the auth field to bearer")
+        void rewritesAuthFieldOnly() {
             String request = """
                     meta {
                       name: Get Users
@@ -64,8 +63,9 @@ class BearerAuthEnablerTest {
                       seq: 1
                     }
 
-                    auth {
-                      mode: basic
+                    get {
+                      url: https://api.example.com/users
+                      auth: basic
                     }
                     """;
 
@@ -73,7 +73,7 @@ class BearerAuthEnablerTest {
 
             assertThat(outcome.changed()).isTrue();
             String rendered = parser.render(outcome.document());
-            assertThat(rendered).contains("auth {\n  mode: bearer\n}");
+            assertThat(rendered).contains("get {\n  url: https://api.example.com/users\n  auth: bearer\n}");
             assertThat(rendered).contains("auth:bearer {\n  token: {{jwt}}\n}");
         }
     }
@@ -92,8 +92,9 @@ class BearerAuthEnablerTest {
                       seq: 1
                     }
 
-                    auth {
-                      mode: bearer
+                    get {
+                      url: https://api.example.com/users
+                      auth: bearer
                     }
 
                     auth:bearer {
@@ -119,6 +120,27 @@ class BearerAuthEnablerTest {
 
             String rendered = parser.render(outcome.document());
             assertThat(rendered).contains("token: {{accessToken}}");
+        }
+    }
+
+    @Nested
+    @DisplayName("given a request with no recognizable HTTP method block")
+    class GivenNoMethodBlock {
+
+        @Test
+        @DisplayName("when enabled, reports no change and leaves the file untouched")
+        void reportsNoChange() {
+            String request = """
+                    meta {
+                      name: Folder settings
+                      type: http
+                    }
+                    """;
+
+            BearerAuthOutcome outcome = enable(request, "jwt");
+
+            assertThat(outcome.changed()).isFalse();
+            assertThat(parser.render(outcome.document())).isEqualTo(request);
         }
     }
 }

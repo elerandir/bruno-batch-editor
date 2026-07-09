@@ -13,14 +13,17 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Ensures a request has an {@code auth { mode: bearer }} block and a corresponding
- * {@code auth:bearer} block referencing a token variable, adding or fixing up whichever of
- * the two is missing or set to something other than bearer.
+ * Ensures a request's HTTP method block has {@code auth: bearer} and that a corresponding
+ * {@code auth:bearer} block exists referencing a token variable, adding or fixing up
+ * whichever of the two is missing or set to something other than bearer.
+ *
+ * <p>Bruno stores the active auth mode as an {@code auth: <mode>} field inside the request's
+ * method block (e.g. {@code get { ... auth: bearer }}), not as a separate top-level block.
  */
 @Singleton
 public class BearerAuthEnabler {
 
-    private static final Pattern MODE_LINE = Pattern.compile("(?m)^([ \t]*mode:[ \t]*).*$");
+    private static final Pattern AUTH_FIELD_LINE = Pattern.compile("(?m)^([ \t]*auth:[ \t]*).*$");
 
     private final EnableBearerAuthConfig config;
 
@@ -31,7 +34,12 @@ public class BearerAuthEnabler {
 
     public BearerAuthOutcome enable(BruDocument document) {
         List<BruNode> nodes = new ArrayList<>(document.nodes());
-        boolean changed = setBearerMode(nodes);
+        int methodBlockIndex = indexOfMethodBlock(nodes);
+        if (methodBlockIndex == -1) {
+            return new BearerAuthOutcome(document, false);
+        }
+
+        boolean changed = setAuthField(nodes, methodBlockIndex);
 
         if (indexOfBlock(nodes, BruConstants.AUTH_BEARER_BLOCK_NAME) == -1) {
             appendBlock(nodes, BruConstants.AUTH_BEARER_BLOCK_NAME, "  token: {{" + config.tokenVariable() + "}}\n");
@@ -41,27 +49,33 @@ public class BearerAuthEnabler {
         return new BearerAuthOutcome(new BruDocument(nodes), changed);
     }
 
-    private static boolean setBearerMode(List<BruNode> nodes) {
-        int authIndex = indexOfBlock(nodes, BruConstants.AUTH_BLOCK_NAME);
-        if (authIndex == -1) {
-            appendBlock(nodes, BruConstants.AUTH_BLOCK_NAME, "  mode: bearer\n");
-            return true;
-        }
-
-        BruNode.Block authBlock = (BruNode.Block) nodes.get(authIndex);
-        Matcher modeMatcher = MODE_LINE.matcher(authBlock.content());
-        if (modeMatcher.find()) {
-            if (modeMatcher.group().trim().equals("mode: bearer")) {
+    private static boolean setAuthField(List<BruNode> nodes, int methodBlockIndex) {
+        BruNode.Block methodBlock = (BruNode.Block) nodes.get(methodBlockIndex);
+        Matcher authMatcher = AUTH_FIELD_LINE.matcher(methodBlock.content());
+        if (authMatcher.find()) {
+            if (authMatcher.group().trim().equals("auth: bearer")) {
                 return false;
             }
-            String newContent = modeMatcher.replaceFirst(Matcher.quoteReplacement(modeMatcher.group(1) + "bearer"));
-            nodes.set(authIndex, new BruNode.Block(authBlock.header(), authBlock.name(), newContent, authBlock.closeText()));
+            String newContent = authMatcher.replaceFirst(Matcher.quoteReplacement(authMatcher.group(1) + "bearer"));
+            nodes.set(methodBlockIndex,
+                    new BruNode.Block(methodBlock.header(), methodBlock.name(), newContent, methodBlock.closeText()));
             return true;
         }
 
-        String newContent = ensureTrailingNewline(authBlock.content()) + "  mode: bearer\n";
-        nodes.set(authIndex, new BruNode.Block(authBlock.header(), authBlock.name(), newContent, authBlock.closeText()));
+        String newContent = ensureTrailingNewline(methodBlock.content()) + "  auth: bearer\n";
+        nodes.set(methodBlockIndex,
+                new BruNode.Block(methodBlock.header(), methodBlock.name(), newContent, methodBlock.closeText()));
         return true;
+    }
+
+    private static int indexOfMethodBlock(List<BruNode> nodes) {
+        for (int i = 0; i < nodes.size(); i++) {
+            if (nodes.get(i) instanceof BruNode.Block block
+                    && BruConstants.HTTP_METHOD_BLOCK_NAMES.contains(block.name())) {
+                return i;
+            }
+        }
+        return -1;
     }
 
     private static int indexOfBlock(List<BruNode> nodes, String name) {
