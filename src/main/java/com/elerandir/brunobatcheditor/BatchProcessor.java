@@ -23,11 +23,10 @@ public class BatchProcessor {
     private final RuntimeConfig config;
     private final BruParser parser;
     private final BodyBlockReplacer replacer;
-    private final BruFileLocator locator;
 
     public List<ReplacementResult> run() throws IOException {
         List<ReplacementResult> results = new ArrayList<>();
-        for (Path file : locator.locate()) {
+        for (Path file : BruFileLocator.locate(config.targetPath())) {
             results.add(processFile(file));
         }
         return results;

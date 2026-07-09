@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.concurrent.Callable;
 
 @Command(
-        name = "bruno-batch-editor",
+        name = "replace-body",
         mixinStandardHelpOptions = true,
         versionProvider = ManifestVersionProvider.class,
         description = "Batch-replace a literal string in every request body across .bru files."
@@ -43,8 +43,7 @@ public class ReplaceBodyCommand implements Callable<Integer> {
         }
         RuntimeConfig config = new RuntimeConfig(targetPath, search, replacement, dryRun);
         AppComponent component = DaggerAppComponent.factory().create(config);
-        BatchProcessor processor = new BatchProcessor(
-                config, component.bruParser(), component.bodyBlockReplacer(), component.bruFileLocator());
+        BatchProcessor processor = new BatchProcessor(config, component.bruParser(), component.bodyBlockReplacer());
 
         List<ReplacementResult> results;
         try {

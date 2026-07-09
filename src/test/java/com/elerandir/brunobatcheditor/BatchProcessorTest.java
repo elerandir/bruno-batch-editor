@@ -38,7 +38,7 @@ class BatchProcessorTest {
 
     private BatchProcessor buildProcessor(RuntimeConfig config) {
         AppComponent component = DaggerAppComponent.factory().create(config);
-        return new BatchProcessor(config, component.bruParser(), component.bodyBlockReplacer(), component.bruFileLocator());
+        return new BatchProcessor(config, component.bruParser(), component.bodyBlockReplacer());
     }
 
     private void writeRequest(Path file, String name) throws IOException {
