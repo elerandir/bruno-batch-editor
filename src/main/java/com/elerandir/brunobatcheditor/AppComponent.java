@@ -14,8 +14,6 @@ public interface AppComponent {
 
     BodyBlockReplacer bodyBlockReplacer();
 
-    BruFileLocator bruFileLocator();
-
     @Component.Factory
     interface Factory {
         AppComponent create(@BindsInstance RuntimeConfig runtimeConfig);
