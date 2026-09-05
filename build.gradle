@@ -11,7 +11,7 @@ java {
     targetCompatibility = JavaVersion.VERSION_21
 }
 
-def lombokVersion = '1.18.38'
+def lombokVersion = '1.18.48'
 def daggerVersion = '2.56.2'
 def picocliVersion = '4.7.6'
 def junitBomVersion = '5.11.4'
